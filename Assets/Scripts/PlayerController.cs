@@ -1,10 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using MonoTreasure.Enums;
+﻿using UnityEngine;
 using MonoTreasure.Input;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Utilities;
 
 namespace MonoTreasure
 {
@@ -17,7 +13,6 @@ namespace MonoTreasure
     {
         [SerializeField]
         private int moveSpeed = 5;
-        private Direction direction;
 
         private MainControls controls;
         private Vector2 inputDirection;
@@ -32,8 +27,6 @@ namespace MonoTreasure
 
         private void Awake()
         {
-            direction = Direction.East;
-
             controls = new MainControls();
         }
 
