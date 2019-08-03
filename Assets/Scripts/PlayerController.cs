@@ -21,6 +21,8 @@ namespace MonoTreasure
         private MainControls controls;
         private Vector2 inputDirection;
 
+        public Animator animator;
+
         public int MoveSpeed
         {
             get; set;
@@ -43,6 +45,7 @@ namespace MonoTreasure
         {
             Vector3 input = new Vector3(inputDirection.x, inputDirection.y, 0.0f);
             transform.position = transform.position + input * Time.deltaTime * moveSpeed;
+            animator.SetFloat("MovementInput", Mathf.Abs(Mathf.Max(inputDirection.x, inputDirection.y)));
         }
 
         void MainControls.IPlayerActions.OnAttack(InputAction.CallbackContext context)
