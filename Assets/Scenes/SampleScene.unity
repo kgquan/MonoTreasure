@@ -2831,6 +2831,7 @@ GameObject:
   - component: {fileID: 1444424906}
   - component: {fileID: 1444424905}
   - component: {fileID: 1444424908}
+  - component: {fileID: 1444424909}
   m_Layer: 0
   m_Name: Diamond
   m_TagString: Untagged
@@ -2933,6 +2934,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5853c213864e72a4d9160e14e45c536e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1444424909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444424904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c108402af01a2624fa1bc8d1dd3160a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  valuable: {fileID: 11400000, guid: 475d4cad059996f469fe4041bf2e2f00, type: 2}
+  baseValue: 0
+  weight: 0
 --- !u!1 &1572358872
 GameObject:
   m_ObjectHideFlags: 0
