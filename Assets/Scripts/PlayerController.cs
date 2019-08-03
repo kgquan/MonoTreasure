@@ -12,6 +12,7 @@ namespace MonoTreasure
     /// Controls the player figure.
     /// </summary>
     [RequireComponent(typeof(SpriteRenderer))]
+    [RequireComponent(typeof(Animator))]
     public class PlayerController : MonoBehaviour, MainControls.IPlayerActions
     {
         [SerializeField]
@@ -22,6 +23,7 @@ namespace MonoTreasure
         private Vector2 inputDirection;
 
         public Animator animator;
+        public SpriteRenderer spriteRenderer;
 
         public int MoveSpeed
         {
@@ -81,6 +83,16 @@ namespace MonoTreasure
                 } else
                 {
                     inputDirection = value;
+                }
+
+                //If moving left, flip sprite; if moving right, keep sprite as normal
+                //But if not moving, leave as is
+                if(value.x < 0)
+                {
+                    spriteRenderer.flipX = true;
+                } else if(value.x > 0)
+                {
+                    spriteRenderer.flipX = false;
                 }
             }
         }
