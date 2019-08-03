@@ -40,7 +40,7 @@ namespace MonoTreasure
         {
             Vector3 input = new Vector3(inputDirection.x, inputDirection.y, 0.0f);
             transform.position = transform.position + input * Time.deltaTime * moveSpeed;
-            animator.SetFloat("MovementInput", Mathf.Abs(Mathf.Max(inputDirection.x, inputDirection.y)));
+            animator.SetFloat("MovementInput", Mathf.Max(Mathf.Abs(inputDirection.x), Mathf.Abs(inputDirection.y)));
         }
 
         void MainControls.IPlayerActions.OnAttack(InputAction.CallbackContext context)
