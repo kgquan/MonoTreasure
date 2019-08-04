@@ -15,11 +15,18 @@ namespace MonoTreasure
         [SerializeField]
         private int moveSpeed = 5;
 
+        /// <summary>
+        /// Actual calculated move speed, based on moveSpeed but with inventory weight factored in.
+        /// </summary>
+        private float finalMoveSpeed;
+
         private MainControls controls;
         private Vector2 inputDirection;
 
         public Animator animator;
         public SpriteRenderer spriteRenderer;
+
+        public float weightModifier = 0;
 
         public int MoveSpeed
         {
@@ -31,7 +38,6 @@ namespace MonoTreasure
         public delegate void OnPlayerActionSwapInventory(GameObject obj);
         public static event OnPlayerActionSwapInventory onPlayerActionSwapInventory;
 
-
         private void Awake()
         {
             controls = new MainControls();
@@ -42,24 +48,27 @@ namespace MonoTreasure
             controls.Player.Enable();
             controls.Player.SetCallbacks(this);
             potentialItem = null;
+            finalMoveSpeed = moveSpeed;
         }
 
         private void OnEnable()
         {
             Collectible.onPlayerInRange += GetPotentialItem;
             Collectible.onPlayerOutOfRange += RemovePotentialItem;
+            InventoryManager.onInventoryChanged += ModifySpeedBasedOnWeight;
         }
 
         private void OnDisable()
         {
             Collectible.onPlayerInRange -= GetPotentialItem;
             Collectible.onPlayerOutOfRange -= RemovePotentialItem;
+            InventoryManager.onInventoryChanged -= ModifySpeedBasedOnWeight;
         }
 
         void Update()
         {
             Vector3 input = new Vector3(inputDirection.x, inputDirection.y, 0.0f);
-            transform.position = transform.position + input * Time.deltaTime * moveSpeed;
+            transform.position = transform.position + input * Time.deltaTime * finalMoveSpeed;
             animator.SetFloat("MovementInput", Mathf.Max(Mathf.Abs(inputDirection.x), Mathf.Abs(inputDirection.y)));
         }
 
@@ -137,6 +146,18 @@ namespace MonoTreasure
 
             potentialItem = null;
             Debug.Log("Not stepping on " + collectible.collectibleName + " any more");
+        }
+
+        /// <summary>
+        /// Alter weight modifier based on weight of input collectible.
+        /// </summary>
+        /// <param name="collectible"></param>
+        private void ModifySpeedBasedOnWeight(Collectible collectible)
+        {
+            weightModifier = Mathf.Clamp(1 - (collectible.weight * (collectible.GetValueWeightRatio() / 2) / 10), 0.4f, 1);
+            finalMoveSpeed = moveSpeed * weightModifier;
+            Debug.Log("weight modifier: " + weightModifier);
+            Debug.Log("finalMoveSpeed: " + finalMoveSpeed);
         }
     }
 }

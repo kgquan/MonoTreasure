@@ -22,6 +22,9 @@ namespace MonoTreasure
 
         public Vector3 spawnOffset = new Vector3(1, 0, 0);
 
+        public delegate void OnInventoryChanged(Collectible collectible);
+        public static event OnInventoryChanged onInventoryChanged;
+
         private void Awake()
         {
             if (instance == null)
@@ -110,6 +113,8 @@ namespace MonoTreasure
                 Debug.Log("adding to inventory: " + collectible.collectibleName);
 
                 inventorySlotIcon.sprite = collectible.valuable.Icon;
+
+                onInventoryChanged(collectible);
 
                 if (currentInventory == null)
                 {
