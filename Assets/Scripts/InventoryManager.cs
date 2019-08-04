@@ -13,7 +13,8 @@ namespace MonoTreasure
     public class InventoryManager : MonoBehaviour
     {
         public static InventoryManager instance;
-        public GameObject currentInventory;
+        public GameObject currentInventory = null;
+
         public GameObject player;
         public UiItemDetail uiItemDetail;
         public UiInventoryItemDetail uiInventoryItemDetail;
@@ -58,11 +59,10 @@ namespace MonoTreasure
 
         private void OnEnable()
         {
+            uiInventoryItemDetail.gameObject.SetActive(true);
             Collectible.onPlayerInRange += ToggleItemStats;
             Collectible.onPlayerOutOfRange += ResetItemStats;
             uiItemDetail.gameObject.SetActive(true);
-            uiInventoryItemDetail.gameObject.SetActive(true);
-
             PlayerController.onPlayerActionSwapInventory += AddToInventory;
         }
 
@@ -70,6 +70,7 @@ namespace MonoTreasure
         {
             Collectible.onPlayerInRange -= ToggleItemStats;
             PlayerController.onPlayerActionSwapInventory -= AddToInventory;
+            Collectible.onPlayerOutOfRange -= ResetItemStats;
         }
 
         /// <summary>
@@ -117,15 +118,17 @@ namespace MonoTreasure
 
                 inventorySlotIcon.sprite = collectible.valuable.Icon;
 
-                onInventoryChanged(collectible);
-
                 uiInventoryItemDetail.gameObject.SetActive(true);
                 uiInventoryItemDetail.valueText.text = collectible.baseValue.ToString();
                 uiInventoryItemDetail.weightText.text = collectible.weight.ToString();
 
+                onInventoryChanged(collectible);
+
                 if (currentInventory == null)
                 {
                     currentInventory = obj;
+                    uiInventoryItemDetail.valueText.text = collectible.baseValue.ToString();
+                    uiInventoryItemDetail.weightText.text = collectible.weight.ToString();
                     obj = null;
                 }
                 else
@@ -141,6 +144,9 @@ namespace MonoTreasure
                     {
                         currInv.transform.position = player.transform.position + spawnOffset;
                     }
+
+                    uiInventoryItemDetail.valueText.text = collectible.baseValue.ToString();
+                    uiInventoryItemDetail.weightText.text = collectible.weight.ToString();
 
                     obj = null;
                     

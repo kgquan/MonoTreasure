@@ -27,6 +27,7 @@ namespace MonoTreasure
         public SpriteRenderer spriteRenderer;
 
         public float weightModifier = 0;
+        public bool isCanMove = true;
 
         public int MoveSpeed
         {
@@ -56,6 +57,7 @@ namespace MonoTreasure
             Collectible.onPlayerInRange += GetPotentialItem;
             Collectible.onPlayerOutOfRange += RemovePotentialItem;
             InventoryManager.onInventoryChanged += ModifySpeedBasedOnWeight;
+            GameManager.onGameEnd += StopMoving;
         }
 
         private void OnDisable()
@@ -63,13 +65,18 @@ namespace MonoTreasure
             Collectible.onPlayerInRange -= GetPotentialItem;
             Collectible.onPlayerOutOfRange -= RemovePotentialItem;
             InventoryManager.onInventoryChanged -= ModifySpeedBasedOnWeight;
+            GameManager.onGameEnd -= StopMoving;
         }
 
         void Update()
         {
-            Vector3 input = new Vector3(inputDirection.x, inputDirection.y, 0.0f);
-            transform.position = transform.position + input * Time.deltaTime * finalMoveSpeed;
-            animator.SetFloat("MovementInput", Mathf.Max(Mathf.Abs(inputDirection.x), Mathf.Abs(inputDirection.y)));
+            if(isCanMove)
+            {
+                Vector3 input = new Vector3(inputDirection.x, inputDirection.y, 0.0f);
+                transform.position = transform.position + input * Time.deltaTime * finalMoveSpeed;
+                animator.SetFloat("MovementInput", Mathf.Max(Mathf.Abs(inputDirection.x), Mathf.Abs(inputDirection.y)));
+            }
+
         }
 
         void MainControls.IPlayerActions.OnAttack(InputAction.CallbackContext context)
@@ -127,12 +134,9 @@ namespace MonoTreasure
         {
             var collectible = obj.GetComponent<Collectible>();
 
-            if(collectible != null)
+            if (collectible != null)
             {
                 potentialItem = collectible.gameObject;
-            } else
-            {
-                Debug.Log("The player currently isn't in range of any collectible item.");
             }
         }
 
@@ -145,7 +149,6 @@ namespace MonoTreasure
             var collectible = obj.GetComponent<Collectible>();
 
             potentialItem = null;
-            Debug.Log("Not stepping on " + collectible.collectibleName + " any more");
         }
 
         /// <summary>
@@ -156,8 +159,11 @@ namespace MonoTreasure
         {
             weightModifier = Mathf.Clamp(1 - (collectible.weight * (collectible.GetValueWeightRatio() / 2) / 10), 0.4f, 1);
             finalMoveSpeed = moveSpeed * weightModifier;
-            Debug.Log("weight modifier: " + weightModifier);
-            Debug.Log("finalMoveSpeed: " + finalMoveSpeed);
+        }
+
+        private void StopMoving()
+        {
+            isCanMove = false;
         }
     }
 }
