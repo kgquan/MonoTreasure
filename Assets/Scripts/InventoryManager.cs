@@ -56,7 +56,6 @@ namespace MonoTreasure
         private void OnDisable()
         {
             Collectible.onPlayerInRange -= ToggleItemStats;
-            uiItemDetail.gameObject.SetActive(false);
         }
 
         /// <summary>
