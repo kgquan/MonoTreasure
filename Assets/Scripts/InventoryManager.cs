@@ -16,6 +16,7 @@ namespace MonoTreasure
         public GameObject currentInventory;
         public GameObject player;
         public UiItemDetail uiItemDetail;
+        public UiInventoryItemDetail uiInventoryItemDetail;
 
         public GameObject proposedItem;
         public Image inventorySlotIcon;
@@ -52,6 +53,7 @@ namespace MonoTreasure
             }
 
             uiItemDetail.gameObject.SetActive(false);
+            uiInventoryItemDetail.gameObject.SetActive(false);
         }
 
         private void OnEnable()
@@ -59,6 +61,7 @@ namespace MonoTreasure
             Collectible.onPlayerInRange += ToggleItemStats;
             Collectible.onPlayerOutOfRange += ResetItemStats;
             uiItemDetail.gameObject.SetActive(true);
+            uiInventoryItemDetail.gameObject.SetActive(true);
 
             PlayerController.onPlayerActionSwapInventory += AddToInventory;
         }
@@ -115,6 +118,10 @@ namespace MonoTreasure
                 inventorySlotIcon.sprite = collectible.valuable.Icon;
 
                 onInventoryChanged(collectible);
+
+                uiInventoryItemDetail.gameObject.SetActive(true);
+                uiInventoryItemDetail.valueText.text = collectible.baseValue.ToString();
+                uiInventoryItemDetail.weightText.text = collectible.weight.ToString();
 
                 if (currentInventory == null)
                 {
