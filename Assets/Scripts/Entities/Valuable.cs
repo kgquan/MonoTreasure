@@ -38,6 +38,8 @@ namespace MonoTreasure.Entities
         private int minRandomnessValue = 0;
         [SerializeField]
         private int maxRandomnessValue = 0;
+        [SerializeField]
+        private Sprite icon;
 
         public List<string> ValuableName {
             get { return valuableNames; }
@@ -87,6 +89,7 @@ namespace MonoTreasure.Entities
         }
         public int MinRandomnessValue { get { return minRandomnessValue; } set { minRandomnessValue = value; } }
         public int MaxRandomnessValue { get { return maxRandomnessValue; } set { maxRandomnessValue = value; } }
+        public Sprite Icon { get { return icon; } set { icon = value; } }
     }
 
 }

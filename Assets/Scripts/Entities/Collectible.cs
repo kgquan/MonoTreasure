@@ -75,10 +75,10 @@ namespace MonoTreasure.Entities
             "Yore"
         };
 
-        public delegate void OnPlayerInRange(Collectible collectible);
+        public delegate void OnPlayerInRange(ref GameObject obj);
         public static event OnPlayerInRange onPlayerInRange;
 
-        public delegate void OnPlayerOutOfRange(Collectible collectible);
+        public delegate void OnPlayerOutOfRange(ref GameObject obj);
         public static event OnPlayerOutOfRange onPlayerOutOfRange;
 
         private void Awake()
@@ -89,6 +89,24 @@ namespace MonoTreasure.Entities
                 baseValue = valuable.Value + rand;
                 weight = valuable.Weight;
                 collectibleName = RandomizeName();
+            }
+        }
+
+        private void OnEnable()
+        {
+            PlayerController.onPlayerActionSwapInventory += PlayerController_onPlayerActionSwapInventory;
+        }
+
+        private void OnDisable()
+        {
+            PlayerController.onPlayerActionSwapInventory -= PlayerController_onPlayerActionSwapInventory;
+        }
+
+        private void PlayerController_onPlayerActionSwapInventory(GameObject obj)
+        {
+            if(gameObject == obj)
+            {
+                Destroy(gameObject);
             }
         }
 
@@ -136,7 +154,8 @@ namespace MonoTreasure.Entities
         {
             if(other.gameObject.tag == "Player")
             {
-                onPlayerInRange(this);
+                var GO = gameObject;
+                onPlayerInRange(ref GO);
             }
         }
 
@@ -144,7 +163,8 @@ namespace MonoTreasure.Entities
         {
             if (collision.gameObject.tag == "Player")
             {
-                onPlayerOutOfRange(this);
+                var GO = gameObject;
+                onPlayerOutOfRange(ref GO);
             }
         }
     }

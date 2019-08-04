@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using MonoTreasure.Input;
 using UnityEngine.InputSystem;
+using MonoTreasure.Entities;
 
 namespace MonoTreasure
 {
@@ -25,6 +26,12 @@ namespace MonoTreasure
             get; set;
         }
 
+        public GameObject potentialItem = null;
+
+        public delegate void OnPlayerActionSwapInventory(GameObject obj);
+        public static event OnPlayerActionSwapInventory onPlayerActionSwapInventory;
+
+
         private void Awake()
         {
             controls = new MainControls();
@@ -34,6 +41,19 @@ namespace MonoTreasure
         {
             controls.Player.Enable();
             controls.Player.SetCallbacks(this);
+            potentialItem = null;
+        }
+
+        private void OnEnable()
+        {
+            Collectible.onPlayerInRange += GetPotentialItem;
+            Collectible.onPlayerOutOfRange += RemovePotentialItem;
+        }
+
+        private void OnDisable()
+        {
+            Collectible.onPlayerInRange -= GetPotentialItem;
+            Collectible.onPlayerOutOfRange -= RemovePotentialItem;
         }
 
         void Update()
@@ -45,7 +65,7 @@ namespace MonoTreasure
 
         void MainControls.IPlayerActions.OnAttack(InputAction.CallbackContext context)
         {
-            if(context.performed)
+            if (context.performed)
             {
                 //TODO: implement attacking
             }
@@ -53,9 +73,9 @@ namespace MonoTreasure
 
         public void OnSwapInventoryItem(InputAction.CallbackContext context)
         {
-            if(context.performed)
+            if (context.performed)
             {
-                //TODO: implement swapping inventory item
+                onPlayerActionSwapInventory(potentialItem);
             }
         }
 
@@ -65,11 +85,11 @@ namespace MonoTreasure
         /// <param name="context">The InputAction context containing information about the button press.</param>
         public void OnMovement(InputAction.CallbackContext context)
         {
-            if(context.performed)
+            if (context.performed)
             {
                 Vector2 value = context.ReadValue<Vector2>();
 
-                if(value != Vector2.zero)
+                if (value != Vector2.zero)
                 {
                     inputDirection.x = Mathf.Clamp(inputDirection.x + value.x, -1, 1);
                     inputDirection.y = Mathf.Clamp(inputDirection.y + value.y, -1, 1);
@@ -80,14 +100,43 @@ namespace MonoTreasure
 
                 //If moving left, flip sprite; if moving right, keep sprite as normal
                 //But if not moving, leave as is
-                if(value.x < 0)
+                if (value.x < 0)
                 {
                     spriteRenderer.flipX = true;
-                } else if(value.x > 0)
+                } else if (value.x > 0)
                 {
                     spriteRenderer.flipX = false;
                 }
             }
+        }
+
+        /// <summary>
+        /// Get game object that player is stepping on to prepare for a potential inventory swap (defined in Collectible.cs).
+        /// </summary>
+        /// <param name="obj">The collectible game object whose game object will be stored</param>
+        private void GetPotentialItem(ref GameObject obj)
+        {
+            var collectible = obj.GetComponent<Collectible>();
+
+            if(collectible != null)
+            {
+                potentialItem = collectible.gameObject;
+            } else
+            {
+                Debug.Log("The player currently isn't in range of any collectible item.");
+            }
+        }
+
+        /// <summary>
+        /// Removes game object that the player is not stepping on anymore (defined in Collectible.cs).
+        /// </summary>
+        /// <param name="obj">The collectible game object</param>
+        private void RemovePotentialItem(ref GameObject obj)
+        {
+            var collectible = obj.GetComponent<Collectible>();
+
+            potentialItem = null;
+            Debug.Log("Not stepping on " + collectible.collectibleName + " any more");
         }
     }
 }

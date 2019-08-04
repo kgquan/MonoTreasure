@@ -21,3 +21,4 @@ MonoBehaviour:
   weight: 3
   minRandomnessValue: 0
   maxRandomnessValue: 2
+  icon: {fileID: 1786331750496382236, guid: ac4a03b2ac334a5468e7459e68a06817, type: 3}
