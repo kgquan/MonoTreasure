@@ -39,8 +39,14 @@ namespace MonoTreasure.Entities
         [SerializeField]
         private int maxRandomnessValue = 0;
 
-        public List<string> ValuableName { get; set; }
-        public string DefaultName { get; set; }
+        public List<string> ValuableName {
+            get { return valuableNames; }
+            set { valuableNames = value; }
+        }
+        public string DefaultName {
+            get { return defaultName; }
+            set { defaultName = value; }
+        }
         public int Value {
             get
             {
@@ -79,8 +85,8 @@ namespace MonoTreasure.Entities
                 weight = value;
             }
         }
-        public int MinRandomnessValue { get; set; }
-        public int MaxRandomnessValue { get; set; }
+        public int MinRandomnessValue { get { return minRandomnessValue; } set { minRandomnessValue = value; } }
+        public int MaxRandomnessValue { get { return maxRandomnessValue; } set { maxRandomnessValue = value; } }
     }
 
 }
