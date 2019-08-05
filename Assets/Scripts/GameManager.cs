@@ -62,7 +62,6 @@ namespace MonoTreasure
 
             uiDungeonComplete.gameObject.SetActive(false);
 
-            Debug.Log("Scene: " + SceneManager.GetActiveScene().name);
             if (SceneManager.GetActiveScene().name == "MainGame")
             {
                 isGameStarted = true;

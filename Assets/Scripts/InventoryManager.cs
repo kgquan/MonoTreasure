@@ -114,7 +114,6 @@ namespace MonoTreasure
             if(obj != null)
             {
                 var collectible = obj.GetComponent<Collectible>();
-                Debug.Log("adding to inventory: " + collectible.collectibleName);
 
                 inventorySlotIcon.sprite = collectible.valuable.Icon;
 
@@ -151,11 +150,7 @@ namespace MonoTreasure
                     obj = null;
                     
                 }
-            } else
-            {
-                Debug.Log("Can't add to inventory - input obj is null");
             }
-
         }
     }
 }

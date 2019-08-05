@@ -16,7 +16,6 @@ namespace MonoTreasure
         {
             if (collision.gameObject.tag == "Player")
             {
-                Debug.Log("finish line!");
                 onDungeonComplete();
             }
         }
