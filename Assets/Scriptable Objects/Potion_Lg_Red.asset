@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c757cdea5cec7d4284e098293d03309, type: 3}
+  m_Name: Potion_Lg_Red
+  m_EditorClassIdentifier: 
+  valuableNames:
+  - Healing Potion
+  defaultName: Healing Potion
+  value: 14
+  weight: 10
+  minRandomnessValue: -5
+  maxRandomnessValue: 5
+  icon: {fileID: -4240526551731935999, guid: 76610450663e77e4c9b3261b864c7d23, type: 3}

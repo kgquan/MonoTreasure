@@ -18,16 +18,114 @@ namespace MonoTreasure.Entities
         /// between the valuable's range of randomness.
         /// </summary>
         public int baseValue = 0;
+        /// <summary>
+        /// The weight of the collectible.
+        /// </summary>
         public int weight = 0;
 
-        private void Start()
+        /// <summary>
+        /// The name of the collectible.
+        /// </summary>
+        public string collectibleName = "";
+
+        private string[] adjectives = new string[] {
+            "Armoured",
+            "Brilliant",
+            "Certified",
+            "Dim",
+            "Excellent",
+            "Fiery",
+            "Grand",
+            "Hateful",
+            "Illicit",
+            "Jovial",
+            "Kingly",
+            "Languid",
+            "Mad",
+            "Opulent",
+            "Powerful",
+            "Quick",
+            "Ripped",
+            "Spiteful",
+            "Turgid",
+            "Unbreakable",
+            "Vexing",
+            "Wishful",
+            "Xenial",
+            "Yielding",
+            "Zesty"};
+
+        private string[] nouns = new string[]
+        {
+            "Azeroth",
+            "Brilliance",
+            "Care",
+            "Dystopia",
+            "Elegance",
+            "Fate",
+            "Hate",
+            "Jeff",
+            "Lust",
+            "Opulence",
+            "Power",
+            "Quan",
+            "Strength",
+            "Time",
+            "Wrath",
+            "Yore"
+        };
+
+        public delegate void OnPlayerInRange(ref GameObject obj);
+        public static event OnPlayerInRange onPlayerInRange;
+
+        public delegate void OnPlayerOutOfRange(ref GameObject obj);
+        public static event OnPlayerOutOfRange onPlayerOutOfRange;
+
+        private void Awake()
         {
             if(valuable != null)
             {
                 var rand = Random.Range(valuable.MinRandomnessValue, valuable.MaxRandomnessValue);
                 baseValue = valuable.Value + rand;
                 weight = valuable.Weight;
+                collectibleName = RandomizeName();
             }
+        }
+
+        private void OnEnable()
+        {
+            PlayerController.onPlayerActionSwapInventory += PlayerController_onPlayerActionSwapInventory;
+        }
+
+        private void OnDisable()
+        {
+            PlayerController.onPlayerActionSwapInventory -= PlayerController_onPlayerActionSwapInventory;
+        }
+
+        private void PlayerController_onPlayerActionSwapInventory(GameObject obj)
+        {
+            if(gameObject == obj)
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        /// <summary>
+        /// Get randomized name from string of names in the valuable scriptable object.
+        /// </summary>
+        /// <returns>The randomized name.</returns>
+        private string RandomizeName()
+        {
+            var adjectiveName = adjectives[Random.Range(0, adjectives.Length - 1)];
+            var valuableName = valuable.ValuableName[Random.Range(0, valuable.ValuableName.Count)];
+            var nounName = nouns[Random.Range(0, nouns.Length - 1)];
+
+            //Should return in the format of X Y of Z, e.g. Armoured Gem of Jeff
+            return string.Format("{0} {1} of {2}",
+                adjectiveName,
+                valuableName,
+                nounName
+                );
         }
 
         /// <summary>
@@ -46,6 +144,28 @@ namespace MonoTreasure.Entities
         public float GetValueWeightRatio()
         {
             return baseValue / weight;
+        }
+
+        /// <summary>
+        /// Collision detection with player.
+        /// </summary>
+        /// <param name="other"></param>
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if(other.gameObject.tag == "Player")
+            {
+                var GO = gameObject;
+                onPlayerInRange(ref GO);
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D collision)
+        {
+            if (collision.gameObject.tag == "Player")
+            {
+                var GO = gameObject;
+                onPlayerOutOfRange(ref GO);
+            }
         }
     }
 }
